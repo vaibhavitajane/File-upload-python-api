@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Upload a File</h2>
+    <input type="file" id="fileInput">
+    <button onclick="uploadFile()">Upload</button>
+    <p id="status"></p>
+    <img id="uploadedImage" src="" style="max-width: 300px; display: none;">
+
+    <script>
+        async function uploadFile() {
+            let fileInput = document.getElementById('fileInput').files[0];
+            let formData = new FormData();
+            formData.append('file', fileInput);
+
+            let response = await fetch('http://127.0.0.1:8000/upload/', {
+                method: 'POST',
+                body: formData
+            });
+
+            let result = await response.json();
+            document.getElementById('status').innerText = "Uploaded: " + result.metadata.original_filename;
+            
+            // This part takes the URL from your API and shows the image
+            let img = document.getElementById('uploadedImage');
+            img.src = result.metadata.download_url;
+            img.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
